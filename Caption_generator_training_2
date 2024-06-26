@@ -1,0 +1,42 @@
+    se2 = Dropout(0.5)(se1)
+    se3 = LSTM(256)(se2)
+    decoder1 = add([fe2, se3])
+    decoder2 = Dense(256, activation='relu')(decoder1)
+    outputs = Dense(vocab_size, activation='softmax')(decoder2)
+    model = Model(inputs=[inputs1, inputs2], outputs=outputs)
+    model.compile(loss='categorical_crossentropy', optimizer='adam')
+    print(model.summary())
+    plot_model(model, to_file='model.png', show_shapes=True)
+    return model
+
+# Function to train the model
+def train_model(model, generator, steps, epochs):
+    model.fit(generator, epochs=epochs, steps_per_epoch=steps, verbose=1)
+
+# Load captions and extract features
+captions_mapping = load_captions(CAPTIONS_FILE)
+clean_captions(captions_mapping)
+features = extract_features(IMAGES_DIR)
+
+# Prepare tokenizer
+tokenizer = create_tokenizer(captions_mapping)
+vocab_size = len(tokenizer.word_index) + 1
+max_length = max(len(cap.split()) for caps in captions_mapping.values())
+
+# Save features and tokenizer
+with open(FEATURES_FILE, 'wb') as f:
+    pickle.dump(features, f)
+
+# Prepare data generator
+data_keys = list(features.keys())
+steps = len(data_keys)
+generator = data_generator(data_keys, captions_mapping, features, tokenizer, max_length, vocab_size, batch_size=32)
+
+# Define and compile the model
+model = define_model(vocab_size, max_length)
+
+# Train the model
+train_model(model, generator, steps, epochs=10)
+
+# Save the model
+model.save(MODEL_FILE)
