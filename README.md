@@ -1,6 +1,6 @@
 # Image-Caption-Generator
 
-This repository contains code for an Image Captioning model using the Flickr8k dataset. The project utilizes deep learning techniques with TensorFlow and Keras to generate captions for images based on their content.
+This repository contains code for an Image Captioning model using the Flickr8k dataset. The project utilizes deep learning techniques with TensorFlow and Keras to generate captions for images based on their content. Note: This project is ongoing and is expected to be completed by November 2024.
 
 Dataset
 The Flickr8k dataset consists of 8,000 images, each with multiple human-annotated captions. These images cover a wide range of scenes and objects, making it suitable for training and evaluating image captioning models.
